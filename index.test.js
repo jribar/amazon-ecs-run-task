@@ -36,7 +36,8 @@ describe('Deploy to ECS', () => {
             .mockReturnValueOnce('1')                                         // count
             .mockReturnValueOnce('amazon-ecs-run-task-for-github-actions')    // started-by
             .mockReturnValueOnce('subnet-asdfasdfa')                          // subnets
-            .mockReturnValueOnce('sg-0123456789');                            // security-groups
+            .mockReturnValueOnce('sg-0123456789')                             // security-groups
+            .mockReturnValueOnce('ENABLED');                                  // assign-public-ip
 
         process.env = Object.assign(process.env, { GITHUB_WORKSPACE: __dirname });
 
@@ -137,6 +138,7 @@ describe('Deploy to ECS', () => {
               awsvpcConfiguration: {
                 subnets: ['subnet-asdfasdfa'],
                 securityGroups: ['sg-0123456789'],
+                assignPublicIp: 'ENABLED',
               },
             },
         });
@@ -153,6 +155,7 @@ describe('Deploy to ECS', () => {
             .mockReturnValueOnce('amazon-ecs-run-task-for-github-actions')    // started-by
             .mockReturnValueOnce('subnet-asdfasdfa')                          // subnets
             .mockReturnValueOnce('sg-0123456789')                             // security groups
+            .mockReturnValueOnce('ENABLED')                                   // assign-public-ip
             .mockReturnValueOnce('true');                                     // wait-for-finish
 
         await run();

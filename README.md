@@ -29,6 +29,7 @@ Runs an Amazon ECS task on ECS cluster.
         started-by: github-actions-${{ github.actor }}
         subnet: 'subnet-asdfasdfadsfasasdfa'
         security-group: 'sg-0123456789'
+        assign-public-ip: 'ENABLED'
         wait-for-finish: true
 ```
 
@@ -104,6 +105,7 @@ The task definition file can be updated prior to deployment with the new contain
         started-by: github-actions-${{ github.actor }}
         subnet: 'subnet-asdfasdfadsfasasdfa'
         security-group: 'sg-0123456789'
+        assign-public-ip: 'ENABLED'
         wait-for-finish: true
 ```
 
