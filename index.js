@@ -92,8 +92,8 @@ async function run() {
     const cluster = core.getInput('cluster', { required: false });
     const count = core.getInput('count', { required: true });
     const startedBy = core.getInput('started-by', { required: false }) || agent;
-    const subnets = core.getInput('subnets', { required: true });
-    const securityGroups = core.getInput('security-groups', { required: true });
+    const subnet = core.getInput('subnet', { required: true });
+    const securityGroup = core.getInput('security-group', { required: true });
     const waitForFinish = core.getInput('wait-for-finish', { required: false }) || false;
     let waitForMinutes = parseInt(core.getInput('wait-for-minutes', { required: false })) || 30;
     if (waitForMinutes > MAX_WAIT_MINUTES) {
@@ -129,8 +129,8 @@ async function run() {
       startedBy: startedBy,
        networkConfiguration: {
          awsvpcConfiguration: {
-           subnets: subnets,
-           securityGroups: securityGroups
+           subnets: [subnet],
+           securityGroups: [securityGroup]
          },
        },
      })}`)
@@ -142,8 +142,8 @@ async function run() {
       startedBy: startedBy,
       networkConfiguration: {
         awsvpcConfiguration: {
-          subnets: subnets,
-          securityGroups: securityGroups
+          subnets: [subnet],
+          securityGroups: [securityGroup]
         },
       },
     }).promise();
