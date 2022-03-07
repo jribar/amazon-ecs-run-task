@@ -4,17 +4,20 @@ const aws = require('aws-sdk');
 const yaml = require('yaml');
 const fs = require('fs');
 
+const WAIT_DEFAULT_DELAY_SEC = 5;
+const MAX_WAIT_MINUTES = 360;
+
 // Attributes that are returned by DescribeTaskDefinition, but are not valid RegisterTaskDefinition inputs
 const IGNORED_TASK_DEFINITION_ATTRIBUTES = [
   'compatibilities',
   'taskDefinitionArn',
   'requiresAttributes',
   'revision',
-  'status'
+  'status',
+  'registeredAt',
+  'deregisteredAt',
+  'registeredBy'
 ];
-
-const WAIT_DEFAULT_DELAY_SEC = 5;
-const MAX_WAIT_MINUTES = 360;
 
 function isEmptyValue(value) {
   if (value === null || value === undefined || value === '') {
@@ -89,6 +92,8 @@ async function run() {
     const cluster = core.getInput('cluster', { required: false });
     const count = core.getInput('count', { required: true });
     const startedBy = core.getInput('started-by', { required: false }) || agent;
+    const subnets = core.getInput('subnets', { required: true });
+    const securityGroups = core.getInput('security-groups', { required: true });
     const waitForFinish = core.getInput('wait-for-finish', { required: false }) || false;
     let waitForMinutes = parseInt(core.getInput('wait-for-minutes', { required: false })) || 30;
     if (waitForMinutes > MAX_WAIT_MINUTES) {
@@ -121,14 +126,26 @@ async function run() {
       cluster: clusterName,
       taskDefinition: taskDefArn,
       count: count,
-      startedBy: startedBy
-    })}`)
+      startedBy: startedBy,
+       networkConfiguration: {
+         awsvpcConfiguration: {
+           subnets: subnets,
+           securityGroups: securityGroups
+         },
+       },
+     })}`)
 
     const runTaskResponse = await ecs.runTask({
       cluster: clusterName,
       taskDefinition: taskDefArn,
       count: count,
-      startedBy: startedBy
+      startedBy: startedBy,
+      networkConfiguration: {
+        awsvpcConfiguration: {
+          subnets: subnets,
+          securityGroups: securityGroups
+        },
+      },
     }).promise();
 
     core.debug(`Run task response ${JSON.stringify(runTaskResponse)}`)
